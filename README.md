@@ -73,6 +73,9 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+## Run Swagger
+
+visit [swagger here](localhost:3000/api)
 
 ## Deployment
 
