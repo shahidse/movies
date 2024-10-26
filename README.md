@@ -34,6 +34,7 @@
 
 Before starting the application, you need to configure a MySQL database. Follow the instructions below to set it up.
 If you haven't already, install MySQL. You can download it from the [official MySQL website](https://dev.mysql.com/downloads/mysql/).
+update .env accordindly
 
 ### 2. run seed
 
