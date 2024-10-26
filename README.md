@@ -75,7 +75,7 @@ $ npm run test:cov
 ```
 ## Run Swagger
 
-visit [swagger here](localhost:3000/api)
+visit [swagger here](http://localhost:3000/api)
 
 ## Deployment
 
