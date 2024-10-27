@@ -4,12 +4,31 @@ import { User } from '../users/user.entity';
 import { Category } from '../categories/category.entity';
 import { Movie } from '../movies/movie.entity';
 import { MovieRating } from '../users/rating.entity';
+import * as fs from 'fs';
+import * as path from 'path';
+import { initDb } from 'src/init-db';
+
+// Function to get a random image from the static folder
+const getRandomImage = () => {
+  const imagesPath = path.join(__dirname, '../../../static/images'); // Path to your images
+  const imageFiles = fs.readdirSync(imagesPath); // Read the files in the directory
+  const randomIndex = Math.floor(Math.random() * imageFiles.length);
+  return `static/images/${imageFiles[randomIndex]}`; // Return the image path
+};
 
 const seedData = async () => {
+  const dbHost = process.env.DB_HOST || 'localhost';
+  const dbPort = +process.env.DB_PORT || 3306;
+  const dbUsername = process.env.DB_USERNAME || 'root';
+  const dbPassword = process.env.DB_PASSWORD || '';
+  const dbDatabase = process.env.DB_DATABASE || 'movies';
+
+  // Initialize the database
+  await initDb(dbHost, dbPort, dbUsername, dbPassword, dbDatabase);
   const AppDataSource = new DataSource({
-    type: 'mysql', // Change to 'mysql'
+    type: 'mysql',
     host: 'localhost',
-    port: 3306, // Default MySQL port
+    port: 3306,
     username: 'root',
     password: '',
     database: 'movies',
@@ -17,6 +36,15 @@ const seedData = async () => {
     synchronize: true,
   });
 
+  // Create database if it doesn't exist
+  await AppDataSource.initialize();
+  await AppDataSource.query(
+    `CREATE DATABASE IF NOT EXISTS ${AppDataSource.options.database}`,
+  );
+  await AppDataSource.query(`USE ${AppDataSource.options.database}`);
+
+  // Close initial connection and reinitialize to synchronize entities
+  await AppDataSource.destroy();
   await AppDataSource.initialize();
 
   // Seed categories
@@ -27,7 +55,7 @@ const seedData = async () => {
     await AppDataSource.getRepository(Category).save(category);
   }
 
-  // Seed movies (example data)
+  // Seed movies with random images
   const movieData = [
     {
       title: 'Action Movie 1',
@@ -101,6 +129,7 @@ const seedData = async () => {
   for (const data of movieData) {
     const movie = new Movie();
     Object.assign(movie, data);
+    movie.image = getRandomImage(); // Assign a random image
     await AppDataSource.getRepository(Movie).save(movie);
   }
 

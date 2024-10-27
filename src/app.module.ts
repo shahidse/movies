@@ -11,12 +11,18 @@ import { MovieRating } from './modules/users/rating.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CategoriesModule } from './modules/categories/categories.module';
 import config from './config/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       load: [config],
       isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'static'), // Path to your static folder
+      serveRoot: '/static/', // URL path prefix
     }),
     TypeOrmModule.forRootAsync({
       useFactory: async (configService: ConfigService) => {

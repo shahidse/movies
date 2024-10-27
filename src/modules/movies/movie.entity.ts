@@ -11,7 +11,8 @@ export class Movie {
 
   @Column()
   description: string;
-
+  @Column({ default: 'http://example.com/john.png' })
+  image: string;
   @Column()
   categoryId: number;
 
