@@ -14,6 +14,22 @@ export class MoviesController {
     return await this.moviesService.getRecommendedMovies(req.user);
   }
   @UseGuards(JwtAuthGuard)
+  @ApiQuery({
+    name: 'query',
+    required: true,
+    description: 'Search term for finding movies',
+    type: String,
+    example: 'Inception', // Example search term
+  })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Movies matching the search term.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'No movies found' }) // Adjust based on your service logic
+  @Get('search')
+  async search(@Query('query') query: string) {
+    return this.moviesService.searchMovies(query);
+  }
+  @UseGuards(JwtAuthGuard)
   @Get()
   @ApiResponse({
     status: 200,
@@ -34,22 +50,6 @@ export class MoviesController {
   @ApiBearerAuth()
   async find(@Param('categoryId') id: number) {
     return this.moviesService.find(id);
-  }
-  @UseGuards(JwtAuthGuard)
-  @Get('search')
-  @ApiQuery({
-    name: 'query',
-    required: true,
-    description: 'Search term for finding movies',
-    type: String,
-    example: 'Inception', // Example search term
-  })
-  @ApiBearerAuth()
-  @ApiResponse({ status: 200, description: 'Movies matching the search term.' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 404, description: 'No movies found' }) // Adjust based on your service logic
-  async search(@Query('query') query: string) {
-    return this.moviesService.searchMovies(query);
   }
   
 }
