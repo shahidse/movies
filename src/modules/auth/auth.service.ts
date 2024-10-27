@@ -40,6 +40,10 @@ export class AuthService {
       return {
         access_token: this.jwtService.sign(payload),
         id: user.id,
+        name: user.name,
+        dob: user.dob,
+        address: user.address,
+        categories: user.categories,
       };
     }
     return null;
