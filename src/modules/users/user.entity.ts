@@ -13,7 +13,7 @@ export class User {
   @Column()
   address: string;
 
-  @Column()
+  @Column({default:"www.example.com/john.png"})
   image: string;
 
   @Column()
